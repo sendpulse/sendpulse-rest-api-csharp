@@ -449,7 +449,18 @@ namespace Sendpulse_rest_api.restapi
             catch (IOException) { }
             return this.handleResult(result);
         }
-
+        /// <summary>
+        /// Creating a campaign
+        /// </summary>
+        /// <param name="senderName"></param>
+        /// <param name="senderEmail"></param>
+        /// <param name="subject"></param>
+        /// <param name="body"></param>
+        /// <param name="bookId"></param>
+        /// <param name="name"></param>
+        /// <param name="send_date"></param>
+        /// <param name="attachments"></param>
+        /// <returns></returns>
         public Dictionary<string, object> createCampaign(string senderName, string senderEmail, string subject, string body, int bookId, string name,string send_date="", string attachments="")
         {
             if (senderName.Length == 0 || senderEmail.Length == 0 || subject.Length == 0 || body.Length == 0 || bookId <= 0)
