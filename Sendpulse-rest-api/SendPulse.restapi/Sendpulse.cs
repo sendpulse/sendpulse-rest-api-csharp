@@ -96,7 +96,6 @@ namespace Sendpulse_rest_api.restapi
                     }
                     else
                     {
-                        string server = WebResp.Server;
                         Stream WebResponse = WebResp.GetResponseStream();
                         StreamReader _response = new StreamReader(WebResponse);
                         strReturn = _response.ReadToEnd();

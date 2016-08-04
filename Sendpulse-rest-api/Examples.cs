@@ -5,6 +5,7 @@ using System.Collections.Generic;
 namespace Sendpulse_rest_api
 {
     class Examples {
+        //https://login.sendpulse.com/settings/#api
         private static string userId = "";
         private static string secret = "";
         static void Main(string[] args)
