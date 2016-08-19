@@ -14,7 +14,7 @@ namespace Sendpulse_rest_api
         static void Main(string[] args)
         {
             Sendpulse sp = new Sendpulse(userId, secret);
-            getlistAddressBooks(sp,10,0);
+            getlistAddressBooks(sp, 10,0);
         }
         /// <summary>
         /// Retrieving a list of address books
@@ -476,6 +476,18 @@ namespace Sendpulse_rest_api
         static void pushListCampaigns(Sendpulse sp, int limit, int offset)
         {
             Dictionary<string, object> result = sp.pushListCampaigns(limit, offset);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Get push campaign info
+        /// </summary>
+        /// <param name="sp"></param>
+        /// <param name="id"></param>
+        static void getpushCampaignInfo(Sendpulse sp,int id)
+        {
+            Dictionary<string, object> result = sp.pushCampaignInfo(id);
             Console.WriteLine("Response Status {0}", result["http_code"]);
             Console.WriteLine("Result {0}", result["data"]);
             Console.ReadKey();
