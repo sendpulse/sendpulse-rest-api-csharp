@@ -253,6 +253,12 @@ namespace Sendpulse_rest_api.restapi
         /// <returns></returns>
         Dictionary<string, object> pushListCampaigns(int limit, int offset);
         /// <summary>
+        /// Get push campaigns info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Dictionary<string, object> pushCampaignInfo(int id);
+        /// <summary>
         /// Get amount of websites
         /// </summary>
         /// <returns></returns>

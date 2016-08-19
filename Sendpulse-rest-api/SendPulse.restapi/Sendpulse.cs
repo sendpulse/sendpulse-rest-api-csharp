@@ -889,6 +889,29 @@ namespace Sendpulse_rest_api.restapi
             catch (IOException) { }
             return this.handleResult(result);
         }
+
+        /// <summary>
+        /// Get push campaigns info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Dictionary<string, object> pushCampaignInfo(int id)
+        {
+            if (id > 0)
+            {
+                Dictionary<string, object> result = null;
+                try
+                {
+                    result = this.sendRequest("push/tasks/" + id, "GET", null);
+                }
+                catch (IOException) { }
+                return this.handleResult(result);
+            }else
+            {
+                return this.handleError("No such push campaign");
+            }
+        }
+        
         /// <summary>
         /// Get amount of websites
         /// </summary>
