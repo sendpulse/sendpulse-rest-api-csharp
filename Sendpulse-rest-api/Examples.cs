@@ -4,6 +4,8 @@ using Sendpulse_rest_api.restapi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace Sendpulse_rest_api
 {
@@ -14,7 +16,12 @@ namespace Sendpulse_rest_api
         static void Main(string[] args)
         {
             Sendpulse sp = new Sendpulse(userId, secret);
-            getlistAddressBooks(sp, 10,0);
+            Dictionary<string, string> attachment = new Dictionary<string, string>();
+            var content_Bytes = File.ReadAllBytes("example_file_path/example_file_name.pdf");
+            String base64_file_content = System.Convert.ToBase64String(content_Bytes);
+            attachment.Add("example_file_name.pdf", base64_file_content);
+            //How to attach files
+            smtpSendMail(sp, "From Name", "fromemail@example.com", "Recipient Name", "recipient@example.com", "<b>HTML BODY</b>", "Text body", "Subject", attachment);
         }
         /// <summary>
         /// Retrieving a list of address books
@@ -349,31 +356,45 @@ namespace Sendpulse_rest_api
             Console.WriteLine("Result {0}", result["data"]);
             Console.ReadKey();
         }
+        
         /// <summary>
-        /// Sending an email
+        /// Sending email via SendPulse SMTP
         /// </summary>
         /// <param name="sp"></param>
-        static void smtpSendMail(Sendpulse sp)
+        /// <param name="from_name"></param>
+        /// <param name="from_email"></param>
+        /// <param name="name_to"></param>
+        /// <param name="email_to"></param>
+        /// <param name="html"></param>
+        /// <param name="text"></param>
+        /// <param name="subject"></param>
+        /// <param name="attachments"></param>
+        static void smtpSendMail(Sendpulse sp, String from_name, String from_email, String name_to, String email_to, String html, String text, String subject, Dictionary<string, string> attachments)
         {
             Dictionary<string, object> from = new Dictionary<string, object>();
-            from.Add("name", "SENDER_NAME");
-            from.Add("email", "SENDER_EMAIL@domain.com");
+            from.Add("name", from_name);
+            from.Add("email", from_email);
             ArrayList to = new ArrayList();
             Dictionary<string, object> elementto = new Dictionary<string, object>();
-            elementto.Add("name", "Test email");
-            elementto.Add("email", "test@test.com");
+            elementto.Add("name", name_to);
+            elementto.Add("email", email_to);
             to.Add(elementto);
             Dictionary<string, object> emaildata = new Dictionary<string, object>();
-            emaildata.Add("html", "<b>Hello</b>");
-            emaildata.Add("text", "Hello!");
-            emaildata.Add("subject", "Send SMTP email");
+            emaildata.Add("html", html);
+            emaildata.Add("text", text);
+            emaildata.Add("subject", subject);
             emaildata.Add("from", from);
             emaildata.Add("to", to);
+            if (attachments.Count > 0)
+            {
+                emaildata.Add("attachments_binary", attachments);
+            }
             Dictionary<string, object> result = sp.smtpSendMail(emaildata);
             Console.WriteLine("Response Status {0}", result["http_code"]);
             Console.WriteLine("Result {0}", result["data"]);
             Console.ReadKey();
         }
+
         /// <summary>
         /// Retrieving a list of emails
         /// </summary>
