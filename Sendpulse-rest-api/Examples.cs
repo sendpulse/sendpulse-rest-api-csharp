@@ -617,5 +617,295 @@ namespace Sendpulse_rest_api
             Console.WriteLine("Result {0}", result["data"]);
             Console.ReadKey();
         }
+        /// <summary>
+        /// Adding telephone numbers to a mailing list
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void addPhones(Sendpulse sp){
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            int bookId = 1111111;
+            string data = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.addPhones(bookId, data);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Deleting telephone numbers from a mailing list
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void removePhones(Sendpulse sp)
+        {
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            int bookId = 1111111;
+            string data = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.removePhones(bookId, data);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Updating the list of variables by a phone number
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void updatePhones(Sendpulse sp){
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            List<object> variables = new List<object>();
+            Dictionary<string,object> variable = new Dictionary<string,object>();
+            variable.Add("name", "var_name");
+            variable.Add("type", "string");
+            variable.Add("value", "value");
+            variables.Add(variable);
+            string variablesData = JsonConvert.SerializeObject(variables);
+            int bookId = 1111111;
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.updatePhones(bookId, phonesData,variablesData);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();   
+        }
+        /// <summary>
+        /// Retrieving information for specific phone number
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getPhoneInfo(Sendpulse sp)
+        {
+            int bookId = 1111111;
+            string phone = "+380500000000";
+            Dictionary<string, object> result = sp.getPhoneInfo(bookId, phone);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Adding telephone number to the blacklist
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void addPhonesToBlackList(Sendpulse sp){
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            string description = "Description";
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.addPhonesToBlackList(phonesData, description);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Deleting a phone number from the blacklist
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void removePhonesFromBlackList(Sendpulse sp)
+        {
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.removePhonesFromBlackList(phonesData);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Viewing the blacklist
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getBlackListPhones(Sendpulse sp){
+            Dictionary<string, object> result = sp.getBlackListPhones();
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Retrieving information of telephone numbers in the blacklist
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getPhonesInfoInBlackList(Sendpulse sp)
+        {
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.getPhonesInfoInBlackList(phonesData);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Creating of a campaign
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void sendSmsCampaign(Sendpulse sp){
+            int bookId = 1111111;
+            Dictionary<string, object> result = sp.sendSmsCampaign(bookId, "test");
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Creating a campaign to a list of phone numbers
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void sendSmsCampaignByPhones(Sendpulse sp){
+            string[] phones = new string[] { "+380500000000", "+380500000001" };
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Dictionary<string, object> result = sp.sendSmsCampaignByPhones(phonesData, "test");
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Retrieving a list of campaigns by date
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getSmsCampaignsList(Sendpulse sp)
+        {
+            string dateFrom = "2018-01-01 00:00:00";
+            string dateTo = "2018-05-01 00:00:00";
+            Dictionary<string, object> result = sp.getSmsCampaignsList(dateFrom, dateTo);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Retrieving a campaign information
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getSmsCampaignInfo(Sendpulse sp)
+        {
+            int id = 1111111;
+            Dictionary<string, object> result = sp.getSmsCampaignInfo(id);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Cancelling a campaign in case when the sending has not started
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void cancelSmsCampaign(Sendpulse sp)
+        {
+            int id = 1111111;
+            Dictionary<string, object> result = sp.cancelSmsCampaign(id);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Calculating the cost of a campaign
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getSmsCampaignCost(Sendpulse sp)
+        {
+            int bookId = 1111111;
+            string sender = "sender_name";
+            Dictionary<string, object> result = sp.getSmsCampaignCost("test",sender,bookId);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Deleting a campaign
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void deleteSmsCampaign(Sendpulse sp)
+        {
+            int id = 1111111;
+            Dictionary<string, object> result = sp.deleteSmsCampaign(id);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+        /// <summary>
+        /// Adding telephone numbers to a mailing list with variables
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void addPhonesToAddreessBook(Sendpulse sp)
+        {
+            Dictionary<string, object> phones = new Dictionary<string, object>();
+            JArray variablesData = new JArray();
+            JArray variables = new JArray();
+            JObject variable = new JObject();
+            variable.Add("name", "var");
+            variable.Add("type", "string");
+            variable.Add("value", "value");
+            variables.Add(variable);
+            variablesData.Add(variables);
+            phones.Add("+380500000000", variablesData);
+            phones.Add("+380500000001", variablesData);
+            int bookId = 1111111;
+            string phonesData = JsonConvert.SerializeObject(phones);
+            Console.WriteLine("Phones {0}", phonesData);
+            Dictionary<string, object> result = sp.addPhonesToAddreessBook(bookId, phonesData);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+            Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Create viber campaign.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void sendViberCampaign(Sendpulse sp)
+        {
+            Dictionary<string, object> additional = new Dictionary<string, object>();
+            JObject button = new JObject();
+            button.Add("text", "test");
+            button.Add("link", "https://test.com");
+            additional.Add("button", button);
+            int bookId = 1111111;
+            string additionalData = JsonConvert.SerializeObject(additional);
+            Dictionary<string, object> result = sp.sendViberCampaign("", bookId, "test", 1, additionalData);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
+        /// <summary>
+        /// Gets viber campaigns list.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getViberTasksList(Sendpulse sp)
+        {
+            Dictionary<string, object> result = sp.getViberTasksList();
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
+        /// <summary>
+        /// Retrieving a list of viber senders.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getViberSenders(Sendpulse sp)
+        {
+            Dictionary<string, object> result = sp.getViberSenders();
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
+        /// <summary>
+        /// Retrieving viber campaign stat.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getViberCampaignStat(Sendpulse sp)
+        {
+            int campaignId = 1111111;
+            Dictionary<string, object> result = sp.getViberCampaignStat(campaignId);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
+        /// <summary>
+        /// Get viber sender info.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getViberSender(Sendpulse sp)
+        {
+            int senderId = 1;
+            Dictionary<string, object> result = sp.getViberSender(senderId);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
+        /// <summary>
+        /// Get viber task recipients.
+        /// </summary>
+        /// <param name="sp">Sp.</param>
+        static void getViberTaskRecipients(Sendpulse sp)
+        {
+            int taskId = 1111111;
+            Dictionary<string, object> result = sp.getViberTaskRecipients(taskId);
+            Console.WriteLine("Response Status {0}", result["http_code"]);
+            Console.WriteLine("Result {0}", result["data"]);
+        }
     }
 }

@@ -1073,5 +1073,511 @@ namespace Sendpulse_rest_api.restapi
             catch (IOException) { }
             return this.handleResult(result);
         }
+
+        /// <summary>
+        /// Add phones to address book.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        public Dictionary<string, object> addPhones(int bookId, string phones)
+        {
+            if (bookId <= 0 || phones.Length == 0) return this.handleError("Empty book id or phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            data.Add("addressBookId", bookId);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/numbers", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Remove phones from address book.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        public Dictionary<string, object> removePhones(int bookId, string phones)
+        {
+            if (bookId <= 0 || phones.Length == 0) return this.handleError("Empty book id or phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            data.Add("addressBookId", bookId);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/numbers", "DELETE", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Update phones.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        /// <param name="variables">Variables.</param>
+        public Dictionary<string, object> updatePhones(int bookId, string phones, string variables)
+        {
+            if (bookId <= 0 || phones.Length == 0) return this.handleError("Empty book id or phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            data.Add("variables", variables);
+            data.Add("addressBookId", bookId);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/numbers", "PUT", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+
+        /// <summary>
+        /// Get the phone number info.
+        /// </summary>
+        /// <returns>The phone info.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phoneNumber">Phone number.</param>
+        public Dictionary<string, object> getPhoneInfo(int bookId,string phoneNumber)
+        {
+            Dictionary<string, object> result = null;
+            string url = "";
+            if (bookId > 0)
+            {
+                url = "/sms/numbers/info/"+ bookId + "/" + phoneNumber;
+                try
+                {
+                    result = this.sendRequest(url, "GET", null);
+                }
+                catch (IOException) { }
+                return this.handleResult(result);
+            }
+            else
+            {
+                return this.handleError("Empty ID");
+            }
+        }
+        /// <summary>
+        /// Add phones to black list.
+        /// </summary>
+        /// <returns>The phone to black list.</returns>
+        /// <param name="phones">Phones.</param>
+        /// <param name="description">Description.</param>
+        public Dictionary<string, object> addPhonesToBlackList(string phones,string description)
+        {
+            if (phones.Length == 0) return this.handleError("Empty phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            if (description != null)
+            {
+                data.Add("description", description);
+            }
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/black_list", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Remove phones from black list.
+        /// </summary>
+        /// <returns>The phones from black list.</returns>
+        /// <param name="phones">Phones.</param>
+        public Dictionary<string, object> removePhonesFromBlackList(string phones)
+        {
+            if (phones.Length == 0) return this.handleError("Empty phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/black_list", "DELETE", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get black list of phone numbers.
+        /// </summary>
+        /// <returns>The black list phones.</returns>
+        public Dictionary<string, object> getBlackListPhones()
+        {
+            Dictionary<string, object> result = null;
+            string url = "/sms/black_list";
+            try
+            {
+                result = this.sendRequest(url, "GET", null);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Retrieving information of telephone numbers in the blacklist
+        /// </summary>
+        /// <returns>The phones info in black list.</returns>
+        public Dictionary<string, object> getPhonesInfoInBlackList(string phones)
+        {
+            Dictionary<string, object> result = null;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            string url = "/sms/black_list/by_numbers";
+            try
+            {
+                result = this.sendRequest(url, "GET", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+
+
+        /// <summary>
+        /// Send the sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="body">Body.</param>
+        /// <param name="transliterate">Transliterate.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="date">Date.</param>
+        public Dictionary<string, object> sendSmsCampaign(int bookId, string body,int transliterate=1,string sender = "", string date="")
+        {
+            if (body.Length == 0) return this.handleError("Empty Body");
+            if (bookId <= 0) return this.handleError("Empty address book Id");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("addressBookId", bookId);
+            data.Add("body", body);
+            if (sender != null)
+            {
+                data.Add("sender", sender);
+            }
+            data.Add("transliterate", transliterate);
+            if (date != null)
+            {
+                data.Add("date", date);
+            }
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/campaigns", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Send sms campaign by phones list.
+        /// </summary>
+        /// <returns>The sms campaign by phones.</returns>
+        /// <param name="phones">Phones.</param>
+        /// <param name="body">Body.</param>
+        /// <param name="transliterate">Transliterate.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="date">Date.</param>
+        public Dictionary<string, object> sendSmsCampaignByPhones(string phones, string body, int transliterate = 1, string sender = "", string date = "")
+        {
+            if (body.Length == 0) return this.handleError("Empty Body");
+            if (phones.Length == 0) return this.handleError("Empty phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            data.Add("body", body);
+            if (sender != null)
+            {
+                data.Add("sender", sender);
+            }
+            data.Add("transliterate", transliterate);
+            if (date != null)
+            {
+                data.Add("date", date);
+            }
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/send", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+
+        /// <summary>
+        /// Get sms campaigns list.
+        /// </summary>
+        /// <returns>The sms campaigns list.</returns>
+        /// <param name="dateFrom">Date from.</param>
+        /// <param name="dateTo">Date to.</param>
+        public Dictionary<string, object> getSmsCampaignsList(string dateFrom,string dateTo){
+            Dictionary<string, object> result = null;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("dateFrom", dateFrom);
+            data.Add("dateTo", dateTo);
+            string url = "/sms/campaigns/list";
+            try
+            {
+                result = this.sendRequest(url, "GET", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get sms campaign info.
+        /// </summary>
+        /// <returns>The sms campaign info.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> getSmsCampaignInfo(int id)
+        {
+            Dictionary<string, object> result = null;
+            string url = "";
+            if (id > 0)
+            {
+                url = "/sms/campaigns/info/" + id;
+                try
+                {
+                    result = this.sendRequest(url, "GET", null);
+                }
+                catch (IOException) { }
+                return this.handleResult(result);
+            }
+            else
+            {
+                return this.handleError("Empty ID");
+            }
+        }
+        /// <summary>
+        /// Cancel sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> cancelSmsCampaign(int id)
+        {
+            Dictionary<string, object> result = null;
+            string url = "";
+            if (id > 0)
+            {
+                url = "/sms/campaigns/cancel/" + id;
+                try
+                {
+                    result = this.sendRequest(url, "GET", null);
+                }
+                catch (IOException) { }
+                return this.handleResult(result);
+            }
+            else
+            {
+                return this.handleError("Empty ID");
+            }
+        }
+        /// <summary>
+        /// Get sms campaign cost.
+        /// </summary>
+        /// <returns>The sms campaign cost.</returns>
+        /// <param name="body">Body.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        public Dictionary<string, object> getSmsCampaignCost(string body,string sender,int addressBookId=0, string phones="")
+        {
+            if (body.Length == 0) return this.handleError("Empty Body");
+            Dictionary<string, object> result = null;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("body", body);
+            data.Add("sender", sender);
+            if(addressBookId <=0 && phones==null){
+                return this.handleError("Empty recipients list");
+            }else if(phones.Length>0){
+                data.Add("phones", phones);
+            }else{
+                data.Add("addressBookId", addressBookId);
+            }
+            string url = "/sms/campaigns/cost";
+            try
+            {
+                result = this.sendRequest(url, "GET", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Delete sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> deleteSmsCampaign(int id)
+        {
+            Dictionary<string, object> result = null;
+            string url = "";
+            if (id > 0)
+            {
+                Dictionary<string, object> data = new Dictionary<string, object>();
+                data.Add("id", id);
+                url = "/sms/campaigns";
+                try
+                {
+                    result = this.sendRequest(url, "DELETE", data);
+                }
+                catch (IOException) { }
+                return this.handleResult(result);
+            }
+            else
+            {
+                return this.handleError("Empty ID");
+            }
+        }
+        /// <summary>
+        /// Add phones to addreess book.
+        /// </summary>
+        /// <returns>The phones to addreess book.</returns>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        public Dictionary<string, object> addPhonesToAddreessBook(int addressBookId,string phones)
+        {
+            if (addressBookId <= 0) return this.handleError("Empty address book id");
+            if (phones.Length == 0) return this.handleError("Empty phones");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("phones", phones);
+            data.Add("addressBookId", addressBookId);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/sms/numbers/variables", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+
+        /// <summary>
+        /// Send viber campaign.
+        /// </summary>
+        /// <returns>The viber campaign.</returns>
+        /// <param name="recipients">Recipients.</param>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="message">Message.</param>
+        /// <param name="senderId">Sender identifier.</param>
+        /// <param name="additional">Additional identifier.</param>
+        /// <param name="messageLiveTime">Message live time.</param>
+        /// <param name="sendDate">Send date.</param>
+        public Dictionary<string, object> sendViberCampaign(string recipients, 
+                                                            int addressBookId,
+                                                            string message,
+                                                            int senderId,
+                                                            string additional,
+                                                            int messageLiveTime=60,
+                                                            string sendDate="now")
+        {
+            if (addressBookId <= 0 && recipients.Length == 0) return this.handleError("Empty recipients list");
+            if (message.Length == 0) return this.handleError("Empty message");
+            if (senderId <= 0) return this.handleError("Empty sender");
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            if (recipients.Length > 0)
+            {
+                data.Add("recipients", recipients);
+            }
+            else if (addressBookId > 0)
+            {
+                data.Add("address_book", addressBookId);
+            }
+            data.Add("message", message);
+            data.Add("sender_id", senderId);
+            data.Add("send_date", sendDate);
+            data.Add("additional", additional);
+            data.Add("message_live_time", messageLiveTime);
+            Dictionary<string, object> result = null;
+            try
+            {
+                result = this.sendRequest("/viber", "POST", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get viber senders list.
+        /// </summary>
+        /// <returns>The viber senders.</returns>
+        public Dictionary<string, object> getViberSenders()
+        {
+            Dictionary<string, object> result = null;
+            string url = "/viber/senders";
+            try
+            {
+                result = this.sendRequest(url, "GET", null);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get viber tasks list.
+        /// </summary>
+        /// <returns>The viber tasks list.</returns>
+        /// <param name="limit">Limit.</param>
+        /// <param name="offset">Offset.</param>
+        public Dictionary<string, object> getViberTasksList(int limit=100,int offset =0 )
+        {
+            Dictionary<string, object> result = null;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data.Add("limit", limit);
+            data.Add("offset", offset);
+            string url = "/viber/task";
+            try
+            {
+                result = this.sendRequest(url, "GET", data);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get viber campaign statistic.
+        /// </summary>
+        /// <returns>The viber campaign stat.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> getViberCampaignStat(int id)
+        {
+            Dictionary<string, object> result = null;
+            if (id <= 0) return this.handleError("Empty id");
+            string url = "/viber/task/"+id;
+            try
+            {
+                result = this.sendRequest(url, "GET", null);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get the viber sender info.
+        /// </summary>
+        /// <returns>The viber sender.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> getViberSender(int id)
+        {
+            Dictionary<string, object> result = null;
+            if (id <= 0) return this.handleError("Empty id");
+            string url = "/viber/senders/" + id;
+            try
+            {
+                result = this.sendRequest(url, "GET", null);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
+        /// <summary>
+        /// Get viber task recipients.
+        /// </summary>
+        /// <returns>The viber task recipients.</returns>
+        /// <param name="id">Identifier.</param>
+        public Dictionary<string, object> getViberTaskRecipients(int id)
+        {
+            Dictionary<string, object> result = null;
+            if (id <= 0) return this.handleError("Empty id");
+            string url = "/viber/task/" + id + "/recipients";
+            try
+            {
+                result = this.sendRequest(url, "GET", null);
+            }
+            catch (IOException) { }
+            return this.handleResult(result);
+        }
     }
 }

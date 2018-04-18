@@ -304,5 +304,160 @@ namespace Sendpulse_rest_api.restapi
         /// <param name="additionalParams"></param>
         /// <returns></returns>
         Dictionary<string, object> createPushTask(Dictionary<string, object> taskinfo, Dictionary<string, object> additionalParams);
+        /// <summary>
+        /// Add phones to address book.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        Dictionary<string, object> addPhones(int bookId, string phones);
+        /// <summary>
+        /// Remove phones from address book.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        Dictionary<string, object> removePhones(int bookId, string phones);
+        /// <summary>
+        /// Update phones.
+        /// </summary>
+        /// <returns>The phones.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        /// <param name="variables">Variables.</param>
+        Dictionary<string, object> updatePhones(int bookId, string phones, string variables);
+        /// <summary>
+        /// Get the phone number info.
+        /// </summary>
+        /// <returns>The phone info.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="phoneNumber">Phone number.</param>
+        Dictionary<string, object> getPhoneInfo(int bookId, string phoneNumber);
+        /// <summary>
+        /// Add phones to black list.
+        /// </summary>
+        /// <returns>The phone to black list.</returns>
+        /// <param name="phones">Phones.</param>
+        /// <param name="description">Description.</param>
+        Dictionary<string, object> addPhonesToBlackList(string phones, string description);
+        /// <summary>
+        /// Remove phones from black list.
+        /// </summary>
+        /// <returns>The phones from black list.</returns>
+        /// <param name="phones">Phones.</param>
+        Dictionary<string, object> removePhonesFromBlackList(string phones);
+        /// <summary>
+        /// Get black list of phone numbers.
+        /// </summary>
+        /// <returns>The black list phones.</returns>
+        Dictionary<string, object> getBlackListPhones();
+        /// <summary>
+        /// Retrieving information of telephone numbers in the blacklist
+        /// </summary>
+        /// <returns>The phones info in black list.</returns>
+        Dictionary<string, object> getPhonesInfoInBlackList(string phones);
+        /// <summary>
+        /// Send the sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="bookId">Book identifier.</param>
+        /// <param name="body">Body.</param>
+        /// <param name="transliterate">Transliterate.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="date">Date.</param>
+        Dictionary<string, object> sendSmsCampaign(int bookId, string body, int transliterate = 1, string sender = "", string date = "");
+        /// <summary>
+        /// Send sms campaign by phones list.
+        /// </summary>
+        /// <returns>The sms campaign by phones.</returns>
+        /// <param name="phones">Phones.</param>
+        /// <param name="body">Body.</param>
+        /// <param name="transliterate">Transliterate.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="date">Date.</param>
+        Dictionary<string, object> sendSmsCampaignByPhones(string phones, string body, int transliterate = 1, string sender = "", string date = "");
+        /// <summary>
+        /// Get sms campaigns list.
+        /// </summary>
+        /// <returns>The sms campaigns list.</returns>
+        /// <param name="dateFrom">Date from.</param>
+        /// <param name="dateTo">Date to.</param>
+        Dictionary<string, object> getSmsCampaignsList(string dateFrom, string dateTo);
+        /// <summary>
+        /// Get sms campaign info.
+        /// </summary>
+        /// <returns>The sms campaign info.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> getSmsCampaignInfo(int id);
+        /// <summary>
+        /// Cancel sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> cancelSmsCampaign(int id);
+        /// <summary>
+        /// Get sms campaign cost.
+        /// </summary>
+        /// <returns>The sms campaign cost.</returns>
+        /// <param name="body">Body.</param>
+        /// <param name="sender">Sender.</param>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        Dictionary<string, object> getSmsCampaignCost(string body, string sender, int addressBookId = 0, string phones = "");
+        /// <summary>
+        /// Delete sms campaign.
+        /// </summary>
+        /// <returns>The sms campaign.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> deleteSmsCampaign(int id);
+        /// <summary>
+        /// Add phones to addreess book.
+        /// </summary>
+        /// <returns>The phones to addreess book.</returns>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="phones">Phones.</param>
+        Dictionary<string, object> addPhonesToAddreessBook(int addressBookId, string phones);
+        /// <summary>
+        /// Send viber campaign.
+        /// </summary>
+        /// <returns>The viber campaign.</returns>
+        /// <param name="recipients">Recipients.</param>
+        /// <param name="addressBookId">Address book identifier.</param>
+        /// <param name="message">Message.</param>
+        /// <param name="senderId">Sender identifier.</param>
+        /// <param name="additional">Additional identifier.</param>
+        /// <param name="messageLiveTime">Message live time.</param>
+        /// <param name="sendDate">Send date.</param>
+        Dictionary<string, object> sendViberCampaign(string recipients,int addressBookId,string message,int senderId,string additional,int messageLiveTime = 60,string sendDate = "now");
+        /// <summary>
+        /// Get viber senders list.
+        /// </summary>
+        /// <returns>The viber senders.</returns>
+        Dictionary<string, object> getViberSenders();
+        /// <summary>
+        /// Get viber tasks list.
+        /// </summary>
+        /// <returns>The viber tasks list.</returns>
+        /// <param name="limit">Limit.</param>
+        /// <param name="offset">Offset.</param>
+        Dictionary<string, object> getViberTasksList(int limit = 100, int offset = 0);
+        /// <summary>
+        /// Get viber campaign statistic.
+        /// </summary>
+        /// <returns>The viber campaign stat.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> getViberCampaignStat(int id);
+        /// <summary>
+        /// Get the viber sender info.
+        /// </summary>
+        /// <returns>The viber sender.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> getViberSender(int id);
+        /// <summary>
+        /// Get viber task recipients.
+        /// </summary>
+        /// <returns>The viber task recipients.</returns>
+        /// <param name="id">Identifier.</param>
+        Dictionary<string, object> getViberTaskRecipients(int id);
     }
 }
