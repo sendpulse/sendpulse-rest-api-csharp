@@ -61,6 +61,8 @@ namespace Sendpulse_rest_api.restapi
         /// <returns>Dictionary<string, object> result data</returns>
         public Dictionary<string, object> sendRequest(string path, string method, Dictionary<string, object> data , bool useToken = true)
         {
+            string originalPath = path;
+            
             string strReturn = null;
             Dictionary<string, object> response = new Dictionary<string, object>();
             try {
@@ -88,44 +90,46 @@ namespace Sendpulse_rest_api.restapi
                     HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
                     HttpStatusCode status = WebResp.StatusCode;
                     response.Add("http_code", (int)status);
-                    if ((int)status == 401 && this.refreshToken == 0)
+                    
+                    Stream WebResponse = WebResp.GetResponseStream();
+                    StreamReader _response = new StreamReader(WebResponse);
+                    strReturn = _response.ReadToEnd();
+                    if (strReturn.Length > 0)
                     {
-                        this.refreshToken += 1;
-                        this.getToken();
-                        response = this.sendRequest(path, method, data, false);
-                    }
-                    else
-                    {
-                        Stream WebResponse = WebResp.GetResponseStream();
-                        StreamReader _response = new StreamReader(WebResponse);
-                        strReturn = _response.ReadToEnd();
-                        if (strReturn.Length > 0)
+                        Object jo = null;
+                        try
                         {
-                            Object jo = null;
-                            try
-                            {
-                                jo = JsonConvert.DeserializeObject<Object>(strReturn.Trim());
-                                if (jo.GetType() == typeof(JObject))
-                                    jo = (JObject)jo;
-                                else if (jo.GetType() == typeof(JArray))
-                                    jo = (JArray)jo;
-                            }
-                            catch (JsonException jex)
-                            {
-                                Console.WriteLine(jex.Message);
-                            }
-                            response.Add("data", jo);
+                            jo = JsonConvert.DeserializeObject<Object>(strReturn.Trim());
+                            if (jo.GetType() == typeof(JObject))
+                                jo = (JObject)jo;
+                            else if (jo.GetType() == typeof(JArray))
+                                jo = (JArray)jo;
                         }
+                        catch (JsonException jex)
+                        {
+                            Console.WriteLine(jex.Message);
+                        }
+                        response.Add("data", jo);
                     }
                 }
                 catch (WebException we)
                 {
                     HttpStatusCode wRespStatusCode = ((HttpWebResponse)we.Response).StatusCode;
-                    response.Add("http_code", (int)wRespStatusCode);
-                    Stream WebResponse = ((HttpWebResponse)we.Response).GetResponseStream();
-                    StreamReader _response = new StreamReader(WebResponse);
-                    strReturn = _response.ReadToEnd();
-                    response.Add("data", strReturn);
+                    if (wRespStatusCode == HttpStatusCode.Unauthorized && this.refreshToken == 0)
+                    {
+                        this.refreshToken += 1;
+                        this.getToken();
+                        response = this.sendRequest(originalPath, method, data, useToken);
+                    }
+                    else
+                    {
+                        response.Add("http_code", (int)wRespStatusCode);
+                        Stream WebResponse = ((HttpWebResponse)we.Response).GetResponseStream();
+                        StreamReader _response = new StreamReader(WebResponse);
+                        strReturn = _response.ReadToEnd();
+                        response.Add("data", strReturn);
+                    }
+                    
                 }
             }
             catch (Exception ex)
