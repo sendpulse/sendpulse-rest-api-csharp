@@ -146,14 +146,31 @@ namespace Sendpulse_rest_api.restapi
         /// <returns>string urlstring</returns>
         private string makeRequestString(Dictionary<string, object> data)
         {
-            string requeststring = "";
+            StringBuilder stringBuilder = new StringBuilder(64);
+
             foreach (var item in data)
             {
-                if (requeststring.Length != 0) requeststring = requeststring+"&";
-                requeststring= requeststring+ HttpUtility.UrlEncode(item.Key, Encoding.UTF8) +"="+ HttpUtility.UrlEncode(item.Value.ToString(), Encoding.UTF8);
-                
+                if (stringBuilder.Length != 0)
+                    stringBuilder.Append('&');
+
+                string key = HttpUtility.UrlEncode(item.Key, Encoding.UTF8);
+
+                if (item.Value.GetType().IsArray)
+                {
+                    foreach (var val in (Array)item.Value)
+                    {
+                        stringBuilder.Append(key);
+                        stringBuilder.Append("[]=");
+                        stringBuilder.Append(HttpUtility.UrlEncode(val.ToString(), Encoding.UTF8));
+                    }
+                }else{
+                    stringBuilder.Append(key);
+                    stringBuilder.Append('=');
+                    stringBuilder.Append(HttpUtility.UrlEncode(item.Value.ToString(), Encoding.UTF8));
+                }
             }
-            return requeststring;
+            
+            return stringBuilder.ToString();
         }
         /// <summary>
         /// Get token and store it
@@ -1457,16 +1474,18 @@ namespace Sendpulse_rest_api.restapi
         /// Send viber campaign.
         /// </summary>
         /// <returns>The viber campaign.</returns>
-        /// <param name="recipients">Recipients.</param>
+        /// <param name="recipients">List of recipients.</param>
         /// <param name="addressBookId">Address book identifier.</param>
         /// <param name="message">Message.</param>
+        /// <param name="messageType">Message type.</param>
         /// <param name="senderId">Sender identifier.</param>
         /// <param name="additional">Additional identifier.</param>
         /// <param name="messageLiveTime">Message live time.</param>
         /// <param name="sendDate">Send date.</param>
-        public Dictionary<string, object> sendViberCampaign(string recipients, 
+        public Dictionary<string, object> sendViberCampaign(string[] recipients, 
                                                             int addressBookId,
                                                             string message,
+                                                            uint messageType,
                                                             int senderId,
                                                             string additional,
                                                             int messageLiveTime=60,
@@ -1489,6 +1508,7 @@ namespace Sendpulse_rest_api.restapi
             data.Add("send_date", sendDate);
             data.Add("additional", additional);
             data.Add("message_live_time", messageLiveTime);
+            data.Add("message_type", messageType.ToString());
             Dictionary<string, object> result = null;
             try
             {
