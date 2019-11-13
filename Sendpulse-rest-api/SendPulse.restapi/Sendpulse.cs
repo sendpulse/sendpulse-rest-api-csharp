@@ -142,7 +142,7 @@ namespace Sendpulse_rest_api.restapi
         /// <returns>string urlstring</returns>
         private string makeRequestString(Dictionary<string, object> data)
         {
-            StringBuilder stringBuilder = new StringBuilder(data.Count*4); // key, value, &, =
+            StringBuilder stringBuilder = new StringBuilder(64);
 
             foreach (var item in data)
             {
