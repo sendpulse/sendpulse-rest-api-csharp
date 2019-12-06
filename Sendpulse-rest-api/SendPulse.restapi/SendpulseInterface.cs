@@ -420,16 +420,9 @@ namespace Sendpulse_rest_api.restapi
         /// <summary>
         /// Send viber campaign.
         /// </summary>
+        /// <param name="viberCampaign">Viber campaign to create</param>
         /// <returns>The viber campaign.</returns>
-        /// <param name="recipients">Recipients.</param>
-        /// <param name="addressBookId">Address book identifier.</param>
-        /// <param name="message">Message.</param>
-        /// <param name="messageType">Message type.</param>
-        /// <param name="senderId">Sender identifier.</param>
-        /// <param name="additional">Additional identifier.</param>
-        /// <param name="messageLiveTime">Message live time.</param>
-        /// <param name="sendDate">Send date.</param>
-        Dictionary<string, object> sendViberCampaign(string[] recipients,int addressBookId,string message, uint messageType, int senderId,string additional,int messageLiveTime = 60,string sendDate = "now");
+        Dictionary<string, object> sendViberCampaign(ViberCampaign viberCampaign);
         /// <summary>
         /// Get viber senders list.
         /// </summary>
