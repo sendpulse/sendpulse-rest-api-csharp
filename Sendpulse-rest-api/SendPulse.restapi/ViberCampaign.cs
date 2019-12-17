@@ -72,7 +72,7 @@ namespace Sendpulse_rest_api.restapi
 
         [JsonProperty("send_date")]
         [JsonConverter(typeof(ViberDateTimeConverter))]
-        public DateTime? SendDate = null;
+        public DateTime SendDate = DateTime.Now;
 
         [JsonProperty("message_type")]
         public ViberCampaignMessageType MessageType = ViberCampaignMessageType.Marketing;

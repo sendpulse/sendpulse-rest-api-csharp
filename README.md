@@ -17,7 +17,7 @@ sendpulse.sendViberCampaign(new ViberCampaign(){
     AddressBook = 1, // By default 0
     MessageType = ViberCampaignMessageType.Transactional, // By default - ViberCampaigMessageType.Marketing
     SenderId = 1, // By default 0
-    SendDate = DateTime.Parse("2020-01-01 00:00:00"), // By default null. If specified time is less than now or null specified - it will be assumed as now
+    SendDate = DateTime.Parse("2020-01-01 00:00:00"), // By default DateTime.Now. If specified time is less than now or DateTime.NOw specified - it will be converted to string "now"
     MessageLiveTime = 120, // By default 60
     Additional = new ViberCampaignAdditional() // By default null
     {
