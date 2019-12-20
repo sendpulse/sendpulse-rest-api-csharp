@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Web;
@@ -172,6 +173,111 @@ namespace Sendpulse_rest_api.restapi
             
             return stringBuilder.ToString();
         }
+
+        /// <summary>
+        /// Sends JSON request to API service.
+        /// Supporte HTTP methods is GET and POST.
+        /// </summary>
+        /// <param name="endpoint">string Endpoint</param>
+        /// <param name="method">HttpMethod method</param>
+        /// <param name="data">object data</param>
+        /// <param name="useToken">bool useToken</param>
+        /// <returns>Dictionary</returns>
+        /// <exception cref="NotSupportedException">When passed not supported HTTP method</exception>
+        public Dictionary<string, object> sendJSONRequest(string endpoint, HttpMethod method, object data, bool useToken = true)
+        {
+            if(method != HttpMethod.Get && method != HttpMethod.Post)
+                throw new NotSupportedException("Method " + method.ToString() + " not supported yet!");
+
+            Dictionary<string, object> response = new Dictionary<string, object>();
+            string strReturn;
+
+            try
+            {
+                string json = JsonConvert.SerializeObject(data,
+                    new JsonSerializerSettings() {NullValueHandling = NullValueHandling.Ignore});
+
+                HttpWebRequest webRequest = (HttpWebRequest) WebRequest.Create(this.apiurl + "/" + endpoint);
+                webRequest.Method = method.ToString();
+
+                if (useToken && this.tokenName != null)
+                    webRequest.Headers.Add("Authorization", "Bearer " + this.tokenName);
+
+                if (method != HttpMethod.Get)
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(json);
+                    webRequest.ContentType = "application/json";
+                    webRequest.ContentLength = buffer.Length;
+                    Stream postData = webRequest.GetRequestStream();
+                    postData.Write(buffer, 0, buffer.Length);
+                    postData.Close();
+                }
+
+                try
+                {
+                    HttpWebResponse webResponse = (HttpWebResponse) webRequest.GetResponse();
+                    HttpStatusCode status = webResponse.StatusCode;
+                    response.Add("http_code", (int) status);
+
+                    if (status == HttpStatusCode.Unauthorized && this.refreshToken == 0)
+                    {
+                        this.refreshToken += 1;
+                        this.getToken();
+                        response = this.sendJSONRequest(endpoint, method, data, true);
+                    }
+                    else
+                    {
+                        Stream responseStream = webResponse.GetResponseStream();
+                        using (StreamReader streamReader = new StreamReader(responseStream))
+                        {
+                            strReturn = streamReader.ReadToEnd();
+                        }
+
+                        if (strReturn.Length > 0)
+                        {
+                            Object jo = null;
+                            try
+                            {
+                                jo = JsonConvert.DeserializeObject<Object>(strReturn.Trim());
+                                if (jo.GetType() == typeof(JObject))
+                                {
+                                    jo = (JObject) jo;
+                                }
+                                else if (jo.GetType() == typeof(JArray))
+                                {
+                                    jo = (JArray) jo;
+                                }
+                            }
+                            catch (JsonException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+
+                            response.Add("data", jo);
+                        }
+                    }
+                }
+                catch (WebException ex)
+                {
+                    HttpStatusCode statusCode = ((HttpWebResponse) ex.Response).StatusCode;
+                    response.Add("http_code", (int) statusCode);
+                    Stream responseStream = ((HttpWebResponse) ex.Response).GetResponseStream();
+                    using (StreamReader streamReader = new StreamReader(responseStream))
+                    {
+                        strReturn = streamReader.ReadToEnd();
+                    }
+
+                    response.Add("data", strReturn);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return response;
+        }
+        
         /// <summary>
         /// Get token and store it
         /// </summary>
@@ -1473,46 +1579,23 @@ namespace Sendpulse_rest_api.restapi
         /// <summary>
         /// Send viber campaign.
         /// </summary>
+        /// <<param name="viberCampaign">Viber campaign to create</param>
         /// <returns>The viber campaign.</returns>
-        /// <param name="recipients">List of recipients.</param>
-        /// <param name="addressBookId">Address book identifier.</param>
-        /// <param name="message">Message.</param>
-        /// <param name="messageType">Message type.</param>
-        /// <param name="senderId">Sender identifier.</param>
-        /// <param name="additional">Additional identifier.</param>
-        /// <param name="messageLiveTime">Message live time.</param>
-        /// <param name="sendDate">Send date.</param>
-        public Dictionary<string, object> sendViberCampaign(string[] recipients, 
-                                                            int addressBookId,
-                                                            string message,
-                                                            uint messageType,
-                                                            int senderId,
-                                                            string additional,
-                                                            int messageLiveTime=60,
-                                                            string sendDate="now")
+        public Dictionary<string, object> sendViberCampaign(ViberCampaign viberCampaign)
         {
-            if (addressBookId <= 0 && recipients.Length == 0) return this.handleError("Empty recipients list");
-            if (message.Length == 0) return this.handleError("Empty message");
-            if (senderId <= 0) return this.handleError("Empty sender");
-            Dictionary<string, object> data = new Dictionary<string, object>();
-            if (recipients.Length > 0)
-            {
-                data.Add("recipients", recipients);
-            }
-            else if (addressBookId > 0)
-            {
-                data.Add("address_book", addressBookId);
-            }
-            data.Add("message", message);
-            data.Add("sender_id", senderId);
-            data.Add("send_date", sendDate);
-            data.Add("additional", additional);
-            data.Add("message_live_time", messageLiveTime);
-            data.Add("message_type", messageType.ToString());
+            if (viberCampaign.AddressBook == 0 && viberCampaign.Recipients.Length == 0)
+                return this.handleError("Empty recipients list");
+
+            if (viberCampaign.Message.Length == 0)
+                return this.handleError("Empty message");
+
+            if (viberCampaign.SenderId == 0)
+                return this.handleError("Empty sender");
+            
             Dictionary<string, object> result = null;
             try
             {
-                result = this.sendRequest("/viber", "POST", data);
+                result = this.sendJSONRequest("/viber", HttpMethod.Post, viberCampaign);
             }
             catch (IOException) { }
             return this.handleResult(result);
