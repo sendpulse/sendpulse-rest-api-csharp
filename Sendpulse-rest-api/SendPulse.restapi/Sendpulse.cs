@@ -871,8 +871,8 @@ namespace Sendpulse_rest_api.restapi
             Dictionary<string, object> data = new Dictionary<string, object>();
             data.Add("limit", limit);
             data.Add("offset", offset);
-            if (fromDate.Length > 0) data.Add("fromDate", fromDate);
-            if (toDate.Length > 0) data.Add("toDate", toDate);
++           if (fromDate.Length > 0) data.Add("from", fromDate);
++           if (toDate.Length > 0) data.Add("to", toDate);
             if (sender.Length > 0) data.Add("sender", sender);
             if (recipient.Length > 0) data.Add("recipient", recipient);
             Dictionary<string, object> result = null;
